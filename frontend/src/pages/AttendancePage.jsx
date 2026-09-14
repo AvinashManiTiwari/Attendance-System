@@ -41,7 +41,7 @@ const AttendancePage = () => {
       try {
 
         const data = await apiFetch(
-          "/api/classes"
+          "/classes"
         );
 
         setClasses(data.classes || []);
@@ -79,7 +79,7 @@ const AttendancePage = () => {
       try {
 
         const data = await apiFetch(
-          `/api/subjects/class/${classId}`
+          `/subjects/class/${classId}`
         );
 
         setSubjects(data.subjects || []);
@@ -117,7 +117,7 @@ const AttendancePage = () => {
       try {
 
         const data = await apiFetch(
-          `/api/students/class/${classId}`
+          `/students/class/${classId}`
         );
 
 
@@ -221,7 +221,7 @@ const AttendancePage = () => {
 
 
       const data = await apiFetch(
-        "/api/attendance",
+        "/attendance",
         {
 
           method: "POST",

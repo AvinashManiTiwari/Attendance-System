@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
 
     const data = await apiFetch(
-  "/api/auth/login",
+  "/auth/login",
       {
         method: "POST",
 
