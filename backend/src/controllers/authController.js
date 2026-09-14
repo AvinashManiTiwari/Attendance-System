@@ -1,5 +1,5 @@
 
-const transporter = require("../config/mailer");
+const resend = require("../config/mailer");
 
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
@@ -148,15 +148,10 @@ const login = async (req, res) => {
   }
 };
 
-
-// ==========================
-// FORGOT PASSWORD
-// ==========================
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
-    // Check email
     if (!email) {
       return res.status(400).json({
         success: false,
@@ -164,12 +159,11 @@ const forgotPassword = async (req, res) => {
       });
     }
 
-    // Find user
     const user = await User.findOne({
       email: email.toLowerCase().trim()
     });
 
-    // Don't reveal whether email exists
+    // Security: don't reveal whether email exists
     if (!user) {
       return res.status(200).json({
         success: true,
@@ -177,32 +171,32 @@ const forgotPassword = async (req, res) => {
       });
     }
 
-    // Generate random token
+    // Generate reset token
     const resetToken = crypto.randomBytes(32).toString("hex");
 
-    // Hash token before saving to database
+    // Hash token before storing in database
     const hashedToken = crypto
       .createHash("sha256")
       .update(resetToken)
       .digest("hex");
 
-    // Save hashed token
     user.resetPasswordToken = hashedToken;
 
-    // Token expires in 15 minutes
+    // Token valid for 15 minutes
     user.resetPasswordExpire = new Date(
       Date.now() + 15 * 60 * 1000
     );
 
     await user.save();
 
-    // Reset URL
-    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+    // Frontend reset-password URL
+    const resetUrl =
+      `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
-    // Send email
-    await transporter.sendMail({
-      from: `"AI Attendance System" <${process.env.EMAIL_USER}>`,
-      to: user.email,
+    // Send email using Resend API
+    const { data, error } = await resend.emails.send({
+      from: "AI Attendance System <onboarding@resend.dev>",
+      to: [user.email],
       subject: "AI Attendance System - Password Reset",
       html: `
         <div style="
@@ -214,65 +208,81 @@ const forgotPassword = async (req, res) => {
           border-radius: 10px;
         ">
 
-          <h2 style="color: #1d4ed8;">
+          <h2 style="color: #2563eb;">
             AI Attendance System
           </h2>
 
-          <h3>Password Reset Request</h3>
+          <p>Hello,</p>
 
           <p>
-            You requested to reset your password.
+            We received a request to reset your password.
           </p>
 
           <p>
-            Click the button below to create a new password.
+            Click the button below to create a new password:
           </p>
 
-          <a
-            href="${resetUrl}"
-            style="
-              display: inline-block;
-              padding: 12px 20px;
-              background: #2563eb;
-              color: white;
-              text-decoration: none;
-              border-radius: 6px;
-              font-weight: bold;
-            "
-          >
-            Reset Password
-          </a>
+          <div style="margin: 30px 0;">
+            <a
+              href="${resetUrl}"
+              style="
+                background: #2563eb;
+                color: white;
+                padding: 12px 20px;
+                text-decoration: none;
+                border-radius: 6px;
+                display: inline-block;
+              "
+            >
+              Reset Password
+            </a>
+          </div>
 
-          <p style="margin-top: 25px;">
+          <p>
             This link will expire in <strong>15 minutes</strong>.
           </p>
 
-          <p style="color: #777; font-size: 13px;">
-            If you did not request this password reset, you can safely
+          <p>
+            If you did not request a password reset, you can safely
             ignore this email.
+          </p>
+
+          <hr>
+
+          <p style="font-size: 12px; color: #777;">
+            AI Attendance System
           </p>
 
         </div>
       `
     });
 
-    console.log("Password reset email sent to:", user.email);
+    if (error) {
+      console.error("Resend Email Error:", error);
 
-    res.status(200).json({
+      return res.status(500).json({
+        success: false,
+        message: "Unable to send password reset email"
+      });
+    }
+
+    console.log("Password reset email sent:", data);
+
+    return res.status(200).json({
       success: true,
       message: "Password reset link has been sent to your email."
     });
 
   } catch (error) {
+
     console.error("Forgot Password Error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Unable to send password reset email"
     });
   }
 };
-
 
 // ==========================
 // RESET PASSWORD
