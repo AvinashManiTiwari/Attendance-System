@@ -92,7 +92,7 @@ The backend is developed using Node.js, Express.js, MongoDB, and Mongoose, with 
 - React Router
 - Context API for authentication state
 
-*Update this section based on the actual implementation status of your frontend.*
+
 
 ## 🏗️ System Architecture
 
@@ -160,89 +160,6 @@ attendance-management-saas/
         └── roleMiddleware.js
 ```
 
-*Note: This is a representative structure. Adjust filenames to match your actual project.*
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-Install the following tools before running the project:
-
-- Node.js and npm
-- MongoDB Atlas account or a local MongoDB instance
-- Postman
-- Visual Studio Code
-
-### 1. Clone the Repository
-
-```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
-```
-
-### 2. Navigate to the Project Folder
-
-```bash
-cd attendance-management-saas
-```
-
-### 3. Install Dependencies
-
-```bash
-npm install
-```
-
-Make sure the project includes the required dependencies, such as Express, Mongoose, dotenv, cors, bcrypt, and jsonwebtoken.
-
-### 4. Configure Environment Variables
-
-Create a `.env` file in the root directory.
-
-```env
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_long_random_secret
-```
-
-Replace the placeholder values with your actual configuration.
-
-**Security:** Never upload your `.env` file, MongoDB credentials, or JWT secret to GitHub.
-
-### 5. Start the Server
-
-For a standard Node.js setup:
-
-```bash
-node server.js
-```
-
-If Nodemon is installed and configured:
-
-```bash
-npm run dev
-```
-
-The server should start on port `5000`, provided that the database connection and environment variables are configured correctly.
-
-### 6. Test the APIs
-
-Open Postman and test the available endpoints.
-
-Base URL:
-
-```text
-http://localhost:5000
-```
-
-Example API groups:
-
-| Module | Endpoint Prefix |
-|---|---|
-| Authentication | `/api/auth` |
-| Students | `/api/students` |
-| Attendance | `/api/attendance` |
-| Assignments | `/api/assignments` |
-
-Use the HTTP methods and request bodies defined by your actual routes.
 
 ## 🔄 Application Workflow
 
@@ -297,6 +214,7 @@ B.Tech – Computer Science and Engineering
 
 - GitHub: [AvinashManiTiwari](https://github.com/AvinashManiTiwari)
 - LinkedIn: [Connect with me](https://www.linkedin.com/in/avinash-mani-tripathi-502748303)
+- Project Link : https://attendance-system-ecru-chi.vercel.app/
 
 ## 📄 License
 
